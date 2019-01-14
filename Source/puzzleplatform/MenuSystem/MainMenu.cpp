@@ -2,6 +2,7 @@
 
 #include "MainMenu.h"
 #include "Button.h"
+#include "WidgetSwitcher.h"
 
 void UMainMenu::SetMenuInterface(IMenuInterface* MenuInterface)
 {
@@ -13,9 +14,10 @@ bool UMainMenu::Initialize()
 	bool Success = Super::Initialize();
 	if (!Success) return false;
 
-	if(!ensure(Host != nullptr)) return false;
-	Host->OnClicked.AddDynamic(this, &UMainMenu::HostServer);
-	Join->OnClicked.AddDynamic(this, &UMainMenu::JoinServer);
+	if(!ensure(HostButton != nullptr)) return false;
+	HostButton->OnClicked.AddDynamic(this, &UMainMenu::HostServer);
+	JoinButton->OnClicked.AddDynamic(this, &UMainMenu::OpenJoinMenu);
+	CancelButton->OnClicked.AddDynamic(this, &UMainMenu::OpenMainMenu);
 	return true;
 }
 
@@ -59,7 +61,28 @@ void UMainMenu::HostServer()
 	}
 }
 
-void UMainMenu::JoinServer()
+void UMainMenu::OpenJoinMenu()
 {
-	UE_LOG(LogTemp, Warning, TEXT("i'm gonna Join a server!"))
+	if (!ensure(MenuSwitcher != nullptr))
+	{
+		return;
+	}
+	if (!ensure(JoinMenu != nullptr))
+	{
+		return;
+	}
+	MenuSwitcher->SetActiveWidget(JoinMenu);
+}
+
+void UMainMenu::OpenMainMenu()
+{
+	if (!ensure(MenuSwitcher != nullptr))
+	{
+		return;
+	}
+	if (!ensure(MainMenu != nullptr))
+	{
+		return;
+	}
+	MenuSwitcher->SetActiveWidget(MainMenu);
 }
