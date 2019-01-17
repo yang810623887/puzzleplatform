@@ -67,6 +67,8 @@ private:
 	UFUNCTION()
 	void QuitGame();
 
+	void UpdateChildren();
+
 	TSubclassOf<UUserWidget> ServerRowClass;
 
 	TOptional<uint32> SelectedIndex;

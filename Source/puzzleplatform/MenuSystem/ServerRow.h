@@ -20,13 +20,16 @@ public:
 
 	void Setup(class UMainMenu* Parent, uint32 Index);
 
+	UPROPERTY(BlueprintReadOnly)
+	bool Selected = false;
+
 private:
 
 	UPROPERTY(meta = (BindWidget))
 	class UButton* RowButton;
 
 	UPROPERTY()
-	class UMainMenu * RowParent;
+	class UMainMenu* RowParent;
 
 	uint32 RowIndex;
 
