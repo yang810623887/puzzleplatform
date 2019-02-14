@@ -11,7 +11,7 @@
 #include "MenuSystem/MainMenu.h"
 #include "MenuSystem/MenuWidget.h"
 
-const static FName SESSION_NAME = TEXT("My Session Game");
+const static FName SESSION_NAME = TEXT("Game");
 const static FName SERVER_NAME_SETINGS_KEY = TEXT("ServerName");
 
 UPuzzlePlatformGameInstance::UPuzzlePlatformGameInstance(const FObjectInitializer & ObjectInitializer)
@@ -150,9 +150,9 @@ void UPuzzlePlatformGameInstance::OnCreateSessionComplete(FName SessionName, boo
 	Engine->AddOnScreenDebugMessage(0, 2, FColor::Green, TEXT("Hosting"));
 
 	UWorld* World = GetWorld();
-	if (!ensure(Engine != nullptr)) return;
+	if (!ensure(World != nullptr)) return;
 
-	World->ServerTravel("/Game/ThirdPersonCPP/Maps/ThirdPersonExampleMap?listen");
+	World->ServerTravel("/Game/PazzlePlatform/Maps/Lobby?listen");
 }
 
 void UPuzzlePlatformGameInstance::OnDestorySessionComplete(FName SessionName, bool Success)

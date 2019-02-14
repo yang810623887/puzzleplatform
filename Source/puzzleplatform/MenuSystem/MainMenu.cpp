@@ -52,6 +52,11 @@ bool UMainMenu::Initialize()
 
 	if(!ensure(HostButton != nullptr)) return false;
 	HostButton->OnClicked.AddDynamic(this, &UMainMenu::OpenHostMenu);
+	if (!ensure(CancelHostMenuButton != nullptr)) return false;
+	CancelHostMenuButton->OnClicked.AddDynamic(this, &UMainMenu::OpenMainMenu);
+	if (!ensure(ConfirmHostMenuButton != nullptr)) return false;
+	ConfirmHostMenuButton->OnClicked.AddDynamic(this, &UMainMenu::HostServer);
+
 	if (!ensure(JoinButton != nullptr)) return false;
 	JoinButton->OnClicked.AddDynamic(this, &UMainMenu::OpenJoinMenu);
 	if (!ensure(CancelButton != nullptr)) return false;
@@ -72,7 +77,8 @@ void UMainMenu::HostServer()
 {
 	if (MenuInterface != nullptr)
 	{
-		MenuInterface->Host("Hello");
+		FString ServerName = ServerHostName->Text.ToString();
+		MenuInterface->Host(ServerName);
 	}
 }
 
