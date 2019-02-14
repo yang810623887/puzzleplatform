@@ -111,6 +111,14 @@ void UPuzzlePlatformGameInstance::Join(uint32 Index)
 	
 }
 
+void UPuzzlePlatformGameInstance::StartSession()
+{
+	if (SessionInterface.IsValid())
+	{
+		SessionInterface->StartSession(SESSION_NAME);
+	}
+}
+
 void UPuzzlePlatformGameInstance::LoadMainMenu()
 {
 	APlayerController* PlayerController = GetFirstLocalPlayerController();
@@ -233,7 +241,7 @@ void UPuzzlePlatformGameInstance::CreateSession()
 		{
 			SessionSettings.bIsLANMatch = false;
 		}
-		SessionSettings.NumPublicConnections = 2;
+		SessionSettings.NumPublicConnections = 5;
 		SessionSettings.bShouldAdvertise = true;
 		SessionSettings.bUsesPresence = true;
 		SessionSettings.Set(SERVER_NAME_SETINGS_KEY, DesiredSeverName, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);

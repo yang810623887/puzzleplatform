@@ -34,6 +34,8 @@ public:
 	UFUNCTION(Exec)
 	void Join(uint32 Index) override;
 
+	void StartSession();
+
 	UFUNCTION(Exec)
 	virtual void LoadMainMenu() override;
 
