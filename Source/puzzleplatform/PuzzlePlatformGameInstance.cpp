@@ -134,6 +134,7 @@ void UPuzzlePlatformGameInstance::RefreshServerList()
 	{
 		//SessionSearch->bIsLanQuery = true;
 		SessionSearch->MaxSearchResults = 100;
+		SessionSearch->QuerySettings.Set(SEARCH_PRESENCE, true, EOnlineComparisonOp::Equals);
 		UE_LOG(LogTemp, Warning, TEXT("Found Session="));
 		SessionInterface->FindSessions(0, SessionSearch.ToSharedRef());
 	}
@@ -212,13 +213,14 @@ void UPuzzlePlatformGameInstance::OnJoinSessionComplete(FName SessionName, EOnJo
 	FString Address;
 	if (!SessionInterface->GetResolvedConnectString(SessionName, Address))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Could not get connect string."))
+		UE_LOG(LogTemp, Warning, TEXT("Could not get connect string."));
+		return;
 	}
 
 	UEngine* Engine = GetEngine();
 	if (!ensure(Engine != nullptr))return;
 
-	Engine->AddOnScreenDebugMessage(0, 2, FColor::Green, FString::Printf(TEXT("Joining as: %s"), *Address));
+	Engine->AddOnScreenDebugMessage(0, 5, FColor::Green, FString::Printf(TEXT("Joining as: %s"), *Address));
 
 	APlayerController* PlayerController = GetFirstLocalPlayerController();
 	if(!ensure(PlayerController != nullptr)) return;
