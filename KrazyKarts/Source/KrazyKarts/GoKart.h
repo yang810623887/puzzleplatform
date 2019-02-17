@@ -38,9 +38,9 @@ private:
 	UPROPERTY(EditAnywhere)
 	float MaxDrivingForce = 10000;
 
-	//The Number of degree rotate per second at full control throw (degree/s).
+	//Minimum radius of the car turning circle at full lock(m).
 	UPROPERTY(EditAnywhere)
-	float MaxDegreePerSecond = 90;
+	float MinTurningRadius = 10;
 
 	//Higher means more drag.
 	UPROPERTY(EditAnywhere)
@@ -56,8 +56,13 @@ private:
 	void ApplyRotation(float DeltaTime);
 
 	void MoveForward(float Value);
-
 	void MoveRight(float Value);
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_MoveForward(float Value);
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_MoveRight(float Value);
 
 	FVector Velocity;
 
