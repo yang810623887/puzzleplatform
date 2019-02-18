@@ -6,6 +6,12 @@
 #include "GameFramework/Pawn.h"
 #include "GoKart.generated.h"
 
+USTRUCT()
+struct FGoKartMove
+{
+	GENERATED_USTRUCT_BODY()
+};
+
 UCLASS()
 class KRAZYKARTS_API AGoKart : public APawn
 {
@@ -64,8 +70,18 @@ private:
 	UFUNCTION(Server, Reliable, WithValidation)
 	void Server_MoveRight(float Value);
 
+	UPROPERTY(Replicated)
 	FVector Velocity;
 
+	UPROPERTY(ReplicatedUsing = OnRep_ReplicatedTranform)
+	FTransform ReplicatedTranform;
+
+	UFUNCTION()
+	void OnRep_ReplicatedTranform();
+
+	UPROPERTY(Replicated)
 	float Throttle;
+
+	UPROPERTY(Replicated)
 	float SteeringThrow;
 };

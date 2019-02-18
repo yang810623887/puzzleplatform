@@ -4,6 +4,7 @@
 #include "Components/InputComponent.h"
 #include "Engine/World.h"
 #include "DrawDebugHelpers.h "
+#include "UnrealNetwork.h"
 
 
 // Sets default values
@@ -11,14 +12,26 @@ AGoKart::AGoKart()
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
+	bReplicates = true;
 }
 
 // Called when the game starts or when spawned
 void AGoKart::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	if (HasAuthority())
+	{
+		NetUpdateFrequency = 1;
+	}
+}
+
+void AGoKart::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(AGoKart, ReplicatedTranform);
+	DOREPLIFETIME(AGoKart, Velocity);
+	DOREPLIFETIME(AGoKart, Throttle);
+	DOREPLIFETIME(AGoKart, SteeringThrow);
 }
 
 FString GetEnumText(ENetRole Role)
@@ -58,6 +71,11 @@ void AGoKart::Tick(float DeltaTime)
 
 	UpdateLocationFromVelocity(DeltaTime);
 
+	if (HasAuthority())
+	{
+		ReplicatedTranform = GetActorTransform();
+	}
+
 	DrawDebugString(GetWorld(), FVector(0, 0, 100), GetEnumText(Role), this, FColor::White, DeltaTime);
 }
 
@@ -93,6 +111,11 @@ void AGoKart::MoveRight(float Value)
 {
 	SteeringThrow = Value;
 	Server_MoveRight(Value);
+}
+
+void AGoKart::OnRep_ReplicatedTranform()
+{
+	SetActorTransform(ReplicatedTranform);
 }
 
 void AGoKart::UpdateLocationFromVelocity(float DeltaTime)
@@ -134,5 +157,5 @@ void AGoKart::Server_MoveRight_Implementation(float Value)
 }
 bool AGoKart::Server_MoveRight_Validate(float Value)
 {
-	return true;
+	return FMath::Abs(Value) <= 1;
 }
