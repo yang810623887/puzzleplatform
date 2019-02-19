@@ -43,7 +43,6 @@ public:
 
 	void SimulateMove(const FGoKartMove& Move);
 
-	FGoKartMove CreateMove(float DeltaTime);
 
 	FVector GetVelocity() { return Velocity; }
 	void SetVelocity(FVector Value) { Velocity = Value; }
@@ -53,6 +52,9 @@ public:
 	FGoKartMove GetLastMove() { return LastMove; }
 
 private:
+
+	FGoKartMove CreateMove(float DeltaTime);
+
 	// The mass of the car (kg),
 	UPROPERTY(EditAnywhere)
 	float Mass = 1000;
