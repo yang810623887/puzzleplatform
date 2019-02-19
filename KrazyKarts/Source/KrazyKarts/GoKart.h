@@ -4,40 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "GoKartMovementComponent.h"
+#include "GoKartMovementReplicator.h"
 #include "GoKart.generated.h"
 
-USTRUCT()
-struct FGoKartMove
-{
-	GENERATED_USTRUCT_BODY()
-
-	UPROPERTY()
-	float Throttle;
-
-	UPROPERTY()
-	float SteeringThrow;
-
-	UPROPERTY()
-	float DeltaTime;
-
-	UPROPERTY()
-	float Time;
-};
-
-USTRUCT()
-struct FGoKartState
-{
-	GENERATED_USTRUCT_BODY()
-
-	UPROPERTY()
-	FTransform Tranform;
-
-	UPROPERTY()
-	FVector Velocity;
-
-	UPROPERTY()
-	FGoKartMove LastMove;
-};
 
 UCLASS()
 class KRAZYKARTS_API AGoKart : public APawn
@@ -56,59 +26,18 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	void UpdateLocationFromVelocity(float DeltaTime);
-
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 
 private:
-	// The mass of the car (kg),
-	UPROPERTY(EditAnywhere)
-	float Mass = 1000;
-
-	//The force applied to the car when the throttle is fully down (N).
-	UPROPERTY(EditAnywhere)
-	float MaxDrivingForce = 10000;
-
-	//Minimum radius of the car turning circle at full lock(m).
-	UPROPERTY(EditAnywhere)
-	float MinTurningRadius = 10;
-
-	//Higher means more drag.
-	UPROPERTY(EditAnywhere)
-	float DragCoefficient = 16;
-
-	//Higher means more Rolling Resistance
-	UPROPERTY(EditAnywhere)
-	float RollingResistanceCoefficient = 0.015;
-
-	void SimulateMove(const FGoKartMove& Move);
-
-	FGoKartMove CreateMove(float DeltaTime);
-
-	void ClearAcknowledgedMoves(FGoKartMove LastMove);
-
-	FVector GetAirResistance();
-	FVector GetRollingResistance();
-
-	void ApplyRotation(float DeltaTime, float SteeringThrow);
 
 	void MoveForward(float Value);
 	void MoveRight(float Value);
 
-	UFUNCTION(Server, Reliable, WithValidation)
-	void Server_SendMove(FGoKartMove Move);
+	UPROPERTY(VisibleAnywhere)
+	UGoKartMovementComponent* MovementComponent;
 
-	UPROPERTY(ReplicatedUsing = OnRep_ServerState)
-	FGoKartState ServerState;
-
-	UFUNCTION()
-	void OnRep_ServerState();
-
-	FVector Velocity;
-	float Throttle;
-	float SteeringThrow;
-
-	TArray<FGoKartMove> UnacknowledgedMoves;
+	UPROPERTY(VisibleAnywhere)
+	UGoKartMovementReplicator* MovementReplicator;
 };
